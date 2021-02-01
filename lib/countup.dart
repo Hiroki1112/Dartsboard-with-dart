@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'ScoreModel.dart';
 
 class CountUpPage extends StatefulWidget {
   CountUpPage({Key key, this.title}) : super(key: key);
@@ -10,13 +11,40 @@ class CountUpPage extends StatefulWidget {
 }
 
 class _CountUpPageState extends State<CountUpPage> {
-  int _score1 = 0;
-  int prev = 0;
+  // プレイヤーごとにクラスを作成する。
+  int latest_index1 = 0;
+  int latest_index2 = 0;
+
+  ScoreModel player1;
+  ScoreModel player2;
+
+  int scores1;
+
+  int score1 = 990;
+  int score2 = 0;
+
+  int display = 0;
+  double displayFontSize = 230;
+  var displayFontColor = Colors.yellow[600];
+  int player = 2;
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
+    if (player == 1) {
+      display = score1;
+      displayFontColor = Colors.yellow[600];
+    } else {
+      display = score2;
+      displayFontColor = Colors.blue;
+    }
+    if (display >= 1000) {
+      setState(() {
+        displayFontSize = 180;
+      });
+    }
     return Scaffold(
+      backgroundColor: Colors.black54,
       body: Center(
         child: Column(
           children: [
@@ -31,6 +59,7 @@ class _CountUpPageState extends State<CountUpPage> {
                   height: height * 0.6,
                   child: Center(
                     child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         Text("1/8 ROUND SCORE"),
                         Text("R1"),
@@ -41,19 +70,6 @@ class _CountUpPageState extends State<CountUpPage> {
                         Text("R6"),
                         Text("R7"),
                         Text("R8"),
-                        Container(
-                          width: width * 0.3,
-                          child: Center(
-                            child: Column(
-                              children: [
-                                Text("DART & RESULT"),
-                                Text("1"),
-                                Text("2"),
-                                Text("3"),
-                              ],
-                            ),
-                          ),
-                        )
                       ],
                     ),
                   ),
@@ -66,9 +82,11 @@ class _CountUpPageState extends State<CountUpPage> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
-                          "101",
+                          "${display}",
                           style: TextStyle(
-                              fontSize: 300, fontWeight: FontWeight.w600),
+                              color: displayFontColor,
+                              fontSize: displayFontSize,
+                              fontWeight: FontWeight.w600),
                         )
                       ],
                     ),
@@ -78,12 +96,90 @@ class _CountUpPageState extends State<CountUpPage> {
                   width: width * 0.3,
                   child: Center(
                     child: Column(
-                        children: List.generate(5, (index) => index)
+                        children: [
+                              Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Padding(
+                                    padding: EdgeInsets.all(5),
+                                    child: ElevatedButton(
+                                      child: Text('X2'),
+                                      style: ElevatedButton.styleFrom(
+                                        primary: Colors.orange,
+                                        onPrimary: Colors.black,
+                                        elevation: 16,
+                                      ),
+                                      onPressed: () {
+                                        setState(() {
+                                          var tmp = score1 + 13;
+                                          score1 = tmp;
+                                        });
+                                      },
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.all(5),
+                                    child: ElevatedButton(
+                                      child: Text('X3'),
+                                      style: ElevatedButton.styleFrom(
+                                        primary: Colors.orange,
+                                        onPrimary: Colors.black,
+                                        elevation: 16,
+                                      ),
+                                      onPressed: () {
+                                        setState(() {
+                                          ////print(score1);
+                                          var tmp = score1 + 13;
+                                          score1 = tmp;
+                                        });
+                                      },
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.all(5),
+                                    child: ElevatedButton(
+                                      child: Text('BULL'),
+                                      style: ElevatedButton.styleFrom(
+                                        primary: Colors.orange,
+                                        onPrimary: Colors.black,
+                                        elevation: 16,
+                                      ),
+                                      onPressed: () {
+                                        setState(() {
+                                          ////print(score1);
+                                          var tmp = score1 + 13;
+                                          score1 = tmp;
+                                        });
+                                      },
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.all(5),
+                                    child: ElevatedButton(
+                                      child: Text('DBULL'),
+                                      style: ElevatedButton.styleFrom(
+                                        primary: Colors.orange,
+                                        onPrimary: Colors.black,
+                                        elevation: 16,
+                                      ),
+                                      onPressed: () {
+                                        setState(() {
+                                          ////print(score1);
+                                          var tmp = score1 + 13;
+                                          score1 = tmp;
+                                        });
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              )
+                            ] +
+                            List.generate(5, (index) => 4 - index)
                                 .map(
                                   (i) => Row(
                                     mainAxisSize: MainAxisSize.min,
-                                    children: List.generate(4,
-                                            (index) => 21 - (index + 1 + i * 4))
+                                    children: List.generate(
+                                            4, (index) => i * 4 + index + 1)
                                         .map(
                                           (value) => Padding(
                                             padding: EdgeInsets.all(5),
@@ -96,10 +192,8 @@ class _CountUpPageState extends State<CountUpPage> {
                                               ),
                                               onPressed: () {
                                                 setState(() {
-                                                  ////print(_score1);
-                                                  var tmp = _score1 + 13;
-                                                  _score1 = tmp;
-                                                  prev = 13;
+                                                  var tmp = score1 + value;
+                                                  score1 = tmp;
                                                 });
                                               },
                                             ),
@@ -110,25 +204,53 @@ class _CountUpPageState extends State<CountUpPage> {
                                 )
                                 .toList() +
                             [
-                              Padding(
-                                padding: EdgeInsets.all(5),
-                                child: ElevatedButton(
-                                  child: Text('x2'),
-                                  style: ElevatedButton.styleFrom(
-                                    primary: Colors.orange,
-                                    onPrimary: Colors.black,
-                                    elevation: 16,
+                              Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Padding(
+                                    padding: EdgeInsets.all(5),
+                                    child: ElevatedButton(
+                                      child: Text('C'),
+                                      style: ElevatedButton.styleFrom(
+                                        primary: Colors.orange,
+                                        onPrimary: Colors.black,
+                                        elevation: 16,
+                                      ),
+                                      onPressed: () {
+                                        setState(() {
+                                          ////print(score1);
+                                          var tmp = score1 + 13;
+                                          score1 = tmp;
+                                        });
+                                      },
+                                    ),
                                   ),
-                                  onPressed: () {
-                                    setState(() {
-                                      ////print(_score1);
-                                      var tmp = _score1 + 13;
-                                      _score1 = tmp;
-                                      prev = 13;
-                                    });
-                                  },
-                                ),
-                              ),
+                                  Padding(
+                                    padding: EdgeInsets.all(5),
+                                    child: ElevatedButton(
+                                      child: Text('NEXT'),
+                                      style: ElevatedButton.styleFrom(
+                                        primary: Colors.orange,
+                                        onPrimary: Colors.black,
+                                        elevation: 16,
+                                      ),
+                                      onPressed: () {
+                                        // 3本の点数を記入した後
+                                        if (latest_index1 == 3 ||
+                                            latest_index2 == 3) {
+                                          setState(() {
+                                            if (player == 1) {
+                                              player = 2;
+                                            } else {
+                                              player = 1;
+                                            }
+                                          });
+                                        }
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              )
                             ]),
                   ),
                 )
@@ -137,7 +259,37 @@ class _CountUpPageState extends State<CountUpPage> {
             Center(
               child: Container(
                 height: height * 0.1,
-                child: Text("THROW DARTS!"),
+                width: width * 0.4,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Text("60",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 30,
+                        )),
+                    Text(" | ",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 30,
+                        )),
+                    Text("60",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 30,
+                        )),
+                    Text(" | ",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 30,
+                        )),
+                    Text("60",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 30,
+                        )),
+                  ],
+                ),
               ),
             ),
             Row(
@@ -149,7 +301,7 @@ class _CountUpPageState extends State<CountUpPage> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      Text("101 ",
+                      Text("${score1} ",
                           style: TextStyle(fontSize: 100, color: Colors.white)),
                     ],
                   ),
@@ -161,7 +313,7 @@ class _CountUpPageState extends State<CountUpPage> {
                   child: Row(
                     children: [
                       Text(
-                        " 81",
+                        " ${score2}",
                         style: TextStyle(fontSize: 100, color: Colors.white),
                       ),
                     ],
